@@ -12,6 +12,29 @@ Flight::route('/map', function() {
     Flight::render('map');
 });
 
+Flight::route('/new_game', function() {
+    $player = $_GET['user'];
+
+    $host = 'db';
+    $port = 5432;
+    $dbname = 'mydb';
+    $user = 'postgres';
+    $pass = 'postgres';
+
+    $link = pg_connect("host=$host port=$port dbname=$dbname user=$user password=$pass");
+
+    $sql = "DROP TABLE joueurs;
+        CREATE TABLE joueurs(
+        id SERIAL PRIMARY KEY,
+        nom TEXT,
+        score INTEGER DEFAULT 0);
+        INSERT INTO joueurs(nom) VALUES
+        ('$player')";
+    $query = pg_query($link, $sql);
+
+    Flight::redirect('map');
+});
+
 Flight::route('/test-db', function () {
     $host = 'db';
     $port = 5432;
@@ -39,9 +62,7 @@ Flight::route('/test-db2', function () {
     // Connexion BDD
     $link = pg_connect("host=$host port=$port dbname=$dbname user=$user password=$pass");
 
-    $sql2 = "INSERT INTO points (name, geom) VALUES
-        ('Forcalquier', ST_SetSRID(ST_MakePoint(5.78, 43.96), 4326));
-        SELECT * FROM points";
+    $sql2 = "SELECT * FROM joueurs";
     $query = pg_query($link, $sql2);
     $results = pg_fetch_all($query);
 
