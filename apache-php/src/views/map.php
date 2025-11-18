@@ -11,6 +11,12 @@
 <body>
     <div id="map"></div>
 
+    <div id ="inventaire">inventaire</div>
+
+    <div id="commentaire">commentaire</div>
+
+    <div id="score">score</div>
+
     <script src="assets/map.js"></script>
 </body>
 </html>
