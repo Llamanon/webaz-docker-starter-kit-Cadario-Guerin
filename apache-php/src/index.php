@@ -23,12 +23,7 @@ Flight::route('/new_game', function() {
 
     $link = pg_connect("host=$host port=$port dbname=$dbname user=$user password=$pass");
 
-    $sql = "DROP TABLE joueurs;
-        CREATE TABLE joueurs(
-        id SERIAL PRIMARY KEY,
-        nom TEXT,
-        score INTEGER DEFAULT 0);
-        INSERT INTO joueurs(nom) VALUES
+    $sql = "INSERT INTO joueurs(nom) VALUES
         ('$player')";
     $query = pg_query($link, $sql);
 

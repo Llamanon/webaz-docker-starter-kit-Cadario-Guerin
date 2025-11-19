@@ -13,3 +13,10 @@ INSERT INTO points (name, geom) VALUES
 ('Paris', ST_SetSRID(ST_MakePoint(2.3522, 48.8566), 4326)),
 ('Lyon', ST_SetSRID(ST_MakePoint(4.8357, 45.7640), 4326)),
 ('Marseille', ST_SetSRID(ST_MakePoint(5.3698, 43.2965), 4326));
+
+-- Créer une table joueurs avec les données des joueurs
+CREATE TABLE joueurs (
+    id SERIAL PRIMARY KEY,
+    name TEXT,
+    score INTEGER DEFAULT 0
+)
