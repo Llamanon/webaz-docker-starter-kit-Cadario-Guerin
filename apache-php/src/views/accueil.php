@@ -25,18 +25,15 @@
         $query = pg_query($link, $sql);
         $results = pg_fetch_all($query);
         echo "<table border='1' cellpadding='8' cellspacing='0'>";
-
-        // Si la table contient des lignes
         if ($results) {
-
-            // En-têtes (noms des colonnes)
+            // afficher les colonnes
             echo "<tr>";
             foreach (array_keys($results[0]) as $column) {
                 echo "<th>" . htmlspecialchars($column) . "</th>";
             }
             echo "</tr>";
 
-            // Données
+            // Données des joueurs
             foreach ($results as $row) {
                 echo "<tr>";
                 foreach ($row as $value) {
@@ -50,5 +47,6 @@
         }
 
         echo "</table>";?></p>
+        
 </body>
 </html>

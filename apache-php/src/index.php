@@ -57,7 +57,7 @@ Flight::route('/test-db2', function () {
     // Connexion BDD
     $link = pg_connect("host=$host port=$port dbname=$dbname user=$user password=$pass");
 
-    $sql2 = "SELECT * FROM joueurs";
+    $sql2 = "SELECT * FROM objets";
     $query = pg_query($link, $sql2);
     $results = pg_fetch_all($query);
 
