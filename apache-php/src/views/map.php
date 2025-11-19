@@ -7,11 +7,19 @@
     <link rel="stylesheet" href="https://unpkg.com/ol/ol.css">
     <script src="https://unpkg.com/ol/dist/ol.js"></script>
     <link rel="stylesheet" href="assets/map.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 </head>
 <body>
     <div id="map"></div>
 
-    <div id ="inventaire">inventaire</div>
+    <div id ="inventaire">
+        <h2> Inventaire de {{ user }}</h2>
+        <img v-for="(item, index) in inventaire" 
+            :src="item" 
+            class="image"
+            :class="{ selected: index === selectedIndex }"
+            @click="imageCliquee(item, index)">
+    </div>
 
     <div id="commentaire">commentaire</div>
 

@@ -1,23 +1,3 @@
-function afficherInventaire(inventaire) {
-    let inv_php = document.getElementById("inventaire");
-    
-    inv_php.innerHTML = ""; // Efface l’ancien contenu
-
-    inventaire.forEach(item => {
-        let img = document.createElement("img");
-        img.src = item;
-        img.classList.add("image");
-        inv_php.appendChild(img);
-    });
-};
-
-function ajouterObjet(path, inventaire) {
-  inventaire.push(path);
-  afficherInventaire(inventaire);
-};
-
-let inventaire = [];
-
 let osmLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -76,15 +56,37 @@ let map = new ol.Map({
 
 map.addLayer(couche);
 
-map.on('click', evt => {
-  const featuress = map.forEachFeatureAtPixel(evt.pixel, f => f)
-  couche.getSource().removeFeature(featuress.get('name'));
-  ajouterObjet(featuress.get('name').getStyle().getImage().getSrc(), inventaire);
-});
 
 
 
 
-
-
-afficherInventaire(inventaire)
+Vue.createApp({
+    data() {
+        return {
+            user : "test",
+            inventaire: [],
+            selectedIndex: null
+        }
+    },
+    mounted() {
+        map.on('click', evt => {
+            const featuress = map.forEachFeatureAtPixel(evt.pixel, f => f);
+            const src = featuress.getStyle().getImage().getSrc();
+            this.ajouterObjet(src);
+            couche.getSource().removeFeature(featuress);
+        });
+    },
+    methods: {
+      ajouterObjet(item) {
+          this.inventaire.push(item);
+          console.log(this.inventaire)
+      },
+      imageCliquee(item, index) {
+        if (this.selectedIndex == index) {
+          this.selectedIndex = null
+        } else {
+        this.selectedIndex = index; 
+        }
+      }
+    }  
+}).mount('#inventaire');
