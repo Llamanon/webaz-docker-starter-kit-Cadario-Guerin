@@ -16,7 +16,7 @@
         <div id ="inventaire">
             <h2> Inventaire de {{ user }}</h2>
             <img v-for="(item, index) in inventaire" 
-                :src="item" 
+                :src="item.src" 
                 class="image"
                 :class="{ selected: index === selectedIndex }"
                 @click="imageCliquee(item, index)">
@@ -30,7 +30,7 @@
 
     <div id="commentaire">commentaire</div>
 
-    <div id="score">score</div>
+    <div id="score">Temps : {{ timer }} s</div>
 
 
     
