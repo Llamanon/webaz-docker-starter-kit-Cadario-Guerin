@@ -18,7 +18,7 @@ tacheo.setStyle(
     })
   })
 );
-tacheo.set('name', tacheo);
+tacheo.set('name', 'tacheo');
 
 let tacheo1 = new ol.Feature({
   geometry: new ol.geom.Point(ol.proj.fromLonLat([5.79, 43.98]))
@@ -32,12 +32,28 @@ tacheo1.setStyle(
     })
   })
 );
-tacheo1.set('name', tacheo1);
+tacheo1.set('name', 'tacheo1');
+
+let tacheo2 = new ol.Feature({
+  geometry: new ol.geom.Point(ol.proj.fromLonLat([5.80, 43.98]))
+});
+
+tacheo2.setStyle(
+  new ol.style.Style({
+    image: new ol.style.Icon({
+      src: 'assets/tacheo.jpg',
+      scale: 0.5
+    })
+  })
+);
+tacheo2.set('name', 'tacheo2');
 
 let couche = new ol.layer.Vector({
   source: new ol.source.Vector({
-    features: [tacheo, tacheo1]
-  })
+    features: [tacheo, tacheo1, tacheo2]
+  }),
+  minZoom: 14,  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// a chnager
+  maxZoom: 17
 });
 
 
@@ -54,7 +70,11 @@ let map = new ol.Map({
     }),
 });
 
+
+
+
 map.addLayer(couche);
+
 
 
 
@@ -65,21 +85,42 @@ Vue.createApp({
         return {
             user : "test",
             inventaire: [],
-            selectedIndex: null
-        }
+            selectedIndex: null,
+            codeSaisi: "",
+          }
     },
     mounted() {
-        map.on('click', evt => {
-            const featuress = map.forEachFeatureAtPixel(evt.pixel, f => f);
+      let el = document.getElementById('popup');
+      let dico = {tacheo : 1, tacheo1 : 2, tacheo2 : 1};
+
+
+
+          
+
+      map.on('click', evt => {
+          const featuress = map.forEachFeatureAtPixel(evt.pixel, f => f);
+          if (featuress) {
             const src = featuress.getStyle().getImage().getSrc();
-            this.ajouterObjet(src);
-            couche.getSource().removeFeature(featuress);
-        });
+            if (dico[featuress.get("name")] == 1) {
+              this.ajouterObjet(src);
+              couche.getSource().removeFeature(featuress);
+            } else if (dico[featuress.get("name")] == 2) {
+              let popup = new ol.Overlay({
+                  element: el,
+                  positioning: 'bottom-center',
+                  offset: [70, -30],
+              });
+              popup.setPosition(featuress.getGeometry().getCoordinates());
+              map.addOverlay(popup);
+              el.style.display = 'block'; 
+            };
+          };
+      });
     },
     methods: {
       ajouterObjet(item) {
           this.inventaire.push(item);
-          console.log(this.inventaire)
+          console.log(this.inventaire);
       },
       imageCliquee(item, index) {
         if (this.selectedIndex == index) {
@@ -87,6 +128,11 @@ Vue.createApp({
         } else {
         this.selectedIndex = index; 
         }
+      },
+      validerCode() {
+        console.log("Code saisi :", this.codeSaisi);
+        // ici tu peux faire ce que tu veux avec le code
+        // par exemple fermer le popup
       }
     }  
-}).mount('#inventaire');
+}).mount('#app');

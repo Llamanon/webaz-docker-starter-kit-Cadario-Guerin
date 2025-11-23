@@ -12,18 +12,28 @@
 <body>
     <div id="map"></div>
 
-    <div id ="inventaire">
-        <h2> Inventaire de {{ user }}</h2>
-        <img v-for="(item, index) in inventaire" 
-            :src="item" 
-            class="image"
-            :class="{ selected: index === selectedIndex }"
-            @click="imageCliquee(item, index)">
+    <div id="app">
+        <div id ="inventaire">
+            <h2> Inventaire de {{ user }}</h2>
+            <img v-for="(item, index) in inventaire" 
+                :src="item" 
+                class="image"
+                :class="{ selected: index === selectedIndex }"
+                @click="imageCliquee(item, index)">
+        </div>
+        <div id="popup">
+            <p>Entrez le code :</p>
+            <input type="text" id="code-input" v-model="codeSaisi" placeholder="Votre code ici">
+            <button @click="validerCode">Valider</button>
+        </div>
     </div>
 
     <div id="commentaire">commentaire</div>
 
     <div id="score">score</div>
+
+
+    
 
     <script src="assets/map.js"></script>
 </body>
