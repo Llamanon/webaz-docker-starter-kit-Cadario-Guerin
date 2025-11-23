@@ -28,7 +28,7 @@ CREATE TABLE objets (
     image TEXT,
     minZoomVisible INTEGER DEFAULT 15,
     visible BOOLEAN DEFAULT FALSE,
-    attribut TEXT,
+    attribut TEXT  -- or : objet recupereable; oc : classe code, ob : objet bloque
 );
 
 CREATE TABLE images (
@@ -38,11 +38,11 @@ CREATE TABLE images (
 );
 
 INSERT INTO objets (name, point, image, attribut) VALUES
-('tacheometre', '(5.908640, 43.984596)', 'assets/tacheo.jpg', 'Objet recuperable'),
-('papier code', '(5.775520, 43.979724)', 'assets/tacheo.jpg', 'Objet recuperable'),
-('batterie', '(5.779087, 43.960778)', 'assets/tacheo.jpg', 'Objet recuperable'),
-('gs18','(5.773650, 43.962458)', 'assets/tacheo.jpg', 'Objet recuperable'),
-('carte SD', '(5.773650, 43.962458)', 'assets/tacheo.jpg', 'Objet recuperable')
+('tacheometre', '(5.908640, 43.984596)', 'assets/tacheo.jpg', 'Or'),
+('papier code', '(5.775520, 43.979724)', 'assets/tacheo.jpg', 'Or'),
+('batterie', '(5.779087, 43.960778)', 'assets/tacheo.jpg', 'Or'),
+('gs18','(5.773650, 43.962458)', 'assets/tacheo.jpg', 'Or'),
+('carte SD', '(5.773650, 43.962458)', 'assets/tacheo.jpg', 'Or')
 ;
 
 

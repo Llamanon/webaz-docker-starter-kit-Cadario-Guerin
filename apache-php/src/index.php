@@ -17,7 +17,7 @@ Flight::route('/map', function() {
 
     $link = pg_connect("host=$host port=$port dbname=$dbname user=$user password=$pass");
 
-    $sql = "SELECT name,point,image,visible FROM objets";
+    $sql = "SELECT * FROM objets";
 
     $query = pg_query($link, $sql);
     $objets = pg_fetch_all($query);

@@ -50,7 +50,25 @@ featuresList.forEach((f, i) => {
 
 */
 
+let featuresDict = {};
 
+objets.forEach(item => {
+  let coords = item.point.replace(/[()]/g, '').split(',').map(Number);
+
+  let key = item.name.replace(/\s+/g, '');
+
+  featuresDict[key] = {
+    coords: coords,
+    minZoom: parseInt(item.minzoomvisible) || 14, // valeur par défaut si non précisé
+    maxZoom: 19, // valeur par défaut
+    icon: item.image,
+    dispo: true, // dispo par défaut
+    echelle: 0.3 // échelle par défaut
+  };
+});
+
+
+/*
 let featuresDict = {
   tacheo: {
     coords: [5.7741, 43.96225],
@@ -102,6 +120,8 @@ let featuresDict = {
   }
 };
 
+*/
+
 let featuresList = [];
 for (let name in featuresDict) {
   let f = new ol.Feature({
@@ -116,6 +136,10 @@ for (let name in featuresDict) {
   featuresList.push(f);
   featuresDict[name].feature = f;
 };
+
+
+
+
 
 let couche = new ol.layer.Vector({
   source: new ol.source.Vector({
