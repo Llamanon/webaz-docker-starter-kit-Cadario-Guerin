@@ -19,4 +19,28 @@ CREATE TABLE joueurs (
     id SERIAL PRIMARY KEY,
     name TEXT,
     score INTEGER DEFAULT 0
-)
+);
+
+CREATE TABLE objets (
+    id SERIAL PRIMARY KEY,
+    name TEXT,
+    point POINT,
+    image TEXT,
+    minZoomVisible INTEGER DEFAULT 15,
+    visible BOOLEAN DEFAULT FALSE,
+    attribut TEXT
+);
+
+CREATE TABLE images (
+    id SERIAL PRIMARY KEY
+    name TEXT
+    url TEXT
+);
+
+INSERT INTO objets (name, point, image, attribut) VALUES
+('tachéomètre', '(5.78, 43.98)', 'assets/tacheo.jpg', 'Objet récupérable');
+
+
+INSERT INTO images (name, url) VALUES
+('tachéomètre', 'assets/tacheo.jpg');
+
