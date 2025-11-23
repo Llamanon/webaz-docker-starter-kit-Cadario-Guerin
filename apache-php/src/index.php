@@ -9,7 +9,22 @@ Flight::route('/', function() {
 });
 
 Flight::route('/map', function() {
-    Flight::render('map');
+    $host = 'db';
+    $port = 5432;
+    $dbname = 'mydb';
+    $user = 'postgres';
+    $pass = 'postgres';
+
+    $link = pg_connect("host=$host port=$port dbname=$dbname user=$user password=$pass");
+
+    $sql = "SELECT name,point,image,visible FROM objets";
+
+    $query = pg_query($link, $sql);
+    $objets = pg_fetch_all($query);
+
+    $results = json_encode($objets);
+
+    Flight::render('map', ['objets_json' => json_encode($objets)]);
 });
 
 Flight::route('/new_game', function() {
@@ -23,7 +38,7 @@ Flight::route('/new_game', function() {
 
     $link = pg_connect("host=$host port=$port dbname=$dbname user=$user password=$pass");
 
-    $sql = "INSERT INTO joueurs(nom) VALUES
+    $sql = "INSERT INTO joueurs(name) VALUES
         ('$player')";
     $query = pg_query($link, $sql);
 

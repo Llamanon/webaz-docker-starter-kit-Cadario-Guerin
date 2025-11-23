@@ -32,6 +32,7 @@
 
     <div id="score">Temps : {{ timer }} s</div>
 
+    <div id="data" data-objets='<?php echo $objets_json; ?>'> </div>
 
     
 

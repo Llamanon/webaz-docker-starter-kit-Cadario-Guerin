@@ -18,7 +18,7 @@ INSERT INTO points (name, geom) VALUES
 CREATE TABLE joueurs (
     id SERIAL PRIMARY KEY,
     name TEXT,
-    score INTEGER DEFAULT 0
+    score INTEGER DEFAULT 2147483647
 );
 
 CREATE TABLE objets (
@@ -32,20 +32,20 @@ CREATE TABLE objets (
 );
 
 CREATE TABLE images (
-    id SERIAL PRIMARY KEY
-    name TEXT
+    id SERIAL PRIMARY KEY,
+    name TEXT,
     url TEXT
 );
 
 INSERT INTO objets (name, point, image, attribut) VALUES
-('tachéomètre', '(5.908640, 43.984596)', 'assets/tacheo.jpg', 'Objet récupérable'),
-('papier code', '(5.775520, 43.979724)', 'assets/tacheo.jpg', 'Objet récupérable'),
-('batterie', '(5.779087, 43.960778)', 'assets/tacheo.jpg', 'Objet récupérable'),
-('gs18','(5.773650, 43.962458)', 'assets/tacheo.jpg', 'Objet récupérable'),
-('carte SD', '(5.773650, 43.962458)', 'assets/tacheo.jpg', 'Objet récupérable')
+('tacheometre', '(5.908640, 43.984596)', 'assets/tacheo.jpg', 'Objet recuperable'),
+('papier code', '(5.775520, 43.979724)', 'assets/tacheo.jpg', 'Objet recuperable'),
+('batterie', '(5.779087, 43.960778)', 'assets/tacheo.jpg', 'Objet recuperable'),
+('gs18','(5.773650, 43.962458)', 'assets/tacheo.jpg', 'Objet recuperable'),
+('carte SD', '(5.773650, 43.962458)', 'assets/tacheo.jpg', 'Objet recuperable')
 ;
 
 
 INSERT INTO images (name, url) VALUES
-('tachéomètre', 'assets/tacheo.jpg');
+('tacheometre', 'assets/tacheo.jpg');
 

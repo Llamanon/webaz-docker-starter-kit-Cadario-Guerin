@@ -1,4 +1,4 @@
-let osmLayer = new ol.layer.Tile({
+let wsmLayer = new ol.layer.Tile({
     source: new ol.source.TileWMS({
         url: 'http://localhost:8080/geoserver/projet_web',
         crossOrigin: 'anonymous',
@@ -6,7 +6,7 @@ let osmLayer = new ol.layer.Tile({
     }),
 });
 
-let wmsLayer = new ol.layer.Tile({
+let osmLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
         maxZoom: 19,
@@ -17,6 +17,9 @@ let wmsLayer = new ol.layer.Tile({
 
 let dico = {tacheo : 1, tacheo1 : 2, tacheo2 : 3, tacheoGS : 1, carteSD: 1};
 
+let objets_php =  document.getElementById("data").dataset.objets;
+let objets = JSON.parse(objets_php);
+console.log(objets);
 //tacheo et tacheoGS à forca des le debut sur le meme point
 //tacheo1 a forca pour le code
 //tacheo2 a saint pierre pour les photos
