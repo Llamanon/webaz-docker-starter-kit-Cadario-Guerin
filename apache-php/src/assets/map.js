@@ -50,7 +50,31 @@ featuresList.forEach((f, i) => {
 
 */
 
+let featuresDict = {};
 
+objets.forEach(item => {
+  let coords = item.point.replace(/[()]/g, '').split(',').map(Number);
+  let key = item.id;
+  let temp_dispo = ''
+  if (item.visible == 't') {
+    temp_dispo = true
+  } else {
+    temp_dispo = false
+  }
+
+  featuresDict[key] = {
+    coords: coords,
+    minZoom: parseInt(item.minzoomvisible),
+    maxZoom: parseInt(item.maxzoomvisible),
+    icon: item.image,
+    dispo: temp_dispo,
+    echelle: 0.3,
+    classe: item.attribut
+  };
+});
+
+
+/*
 let featuresDict = {
   tacheo: {
     coords: [5.7741, 43.96225],
@@ -102,20 +126,27 @@ let featuresDict = {
   }
 };
 
+*/
+
 let featuresList = [];
-for (let name in featuresDict) {
+for (let id in featuresDict) {
   let f = new ol.Feature({
-    geometry: new ol.geom.Point(ol.proj.fromLonLat(featuresDict[name].coords))
+    geometry: new ol.geom.Point(ol.proj.fromLonLat(featuresDict[id].coords))
   });
-  f.set('name', name);
-  f.set('minZoom', featuresDict[name].minZoom);
-  f.set('maxZoom', featuresDict[name].maxZoom);
-  f.set('icon', featuresDict[name].icon);
-  f.set('dispo', featuresDict[name].dispo);
-  f.set('echelle', featuresDict[name].echelle)
+  f.set('id', id);
+  f.set('minZoom', featuresDict[id].minZoom);
+  f.set('maxZoom', featuresDict[id].maxZoom);
+  f.set('icon', featuresDict[id].icon);
+  f.set('dispo', featuresDict[id].dispo);
+  f.set('echelle', featuresDict[id].echelle)
+  f.set('classe', featuresDict[id].classe)
   featuresList.push(f);
-  featuresDict[name].feature = f;
+  featuresDict[id].feature = f;
 };
+
+console.log(featuresDict);
+
+
 
 let couche = new ol.layer.Vector({
   source: new ol.source.Vector({
@@ -126,7 +157,7 @@ let couche = new ol.layer.Vector({
     let min = feature.get('minZoom');
     let max = feature.get('maxZoom');
     let dispo = feature.get('dispo');
-
+    console.log("zoom=", zoom, "min=", min, "max=", max);
     if (zoom < min || zoom > max) return null;
 
     if (dispo) return new ol.style.Style({
@@ -138,7 +169,7 @@ let couche = new ol.layer.Vector({
     return null
   }
 });
-
+console.log(featuresDict)
 /*
 
 let couche = new ol.layer.Vector({
@@ -225,9 +256,9 @@ Vue.createApp({
       map.on('dblclick', evt => {
         let coord = evt.coordinate;
         if (coord[0] >= 643060.5345882539 && coord[0] <= 643071.2921793308 && coord[1] >= 5462232.7063586535 && coord[1] <= 5462244.240776347) {
-          if (this.selectedIndex != null && this.inventaire[this.selectedIndex].name == 'tacheoGS') {
+            if (this.selectedIndex != null && this.inventaire[this.selectedIndex].id == 2) {
             console.log('le code est 5566');
-            featuresDict['tacheo1'].feature.set('dispo', true);
+            featuresDict[4].feature.set('dispo', true);
           } else {
             console.log('choisi un/le bon tacheo')
           };
@@ -244,10 +275,10 @@ Vue.createApp({
           const featuress = map.forEachFeatureAtPixel(evt.pixel, f => f);
           if (featuress) {
             const src = couche.getStyle()(featuress).getImage().getSrc();
-            if (dico[featuress.get("name")] == 1) {
-              this.ajouterObjet(src, featuress.get("name"));
+            if (featuress.get("classe") == "or") {
+              this.ajouterObjet(src, featuress.get("id"));
               couche.getSource().removeFeature(featuress);
-            } else if (dico[featuress.get("name")] == 2) {
+            } else if (featuress.get("classe") == 'oc') {
               let popup = new ol.Overlay({
                   element: this.el,
                   positioning: 'bottom-center',
@@ -256,22 +287,22 @@ Vue.createApp({
               popup.setPosition(featuress.getGeometry().getCoordinates());
               map.addOverlay(popup);
               this.el.style.display = 'block'; 
-            } else if (dico[featuress.get("name")] == 3) {
+            } else if (featuress.get("name") == 'ob') {
               console.log('bloque');
-              if (this.selectedIndex != null && this.inventaire[this.selectedIndex].name == 'carteSD') {
-                this.ajouterObjet("assets/ordi.png", "ordi");
+              if (this.selectedIndex != null && this.inventaire[this.selectedIndex].id == 5) {
+                this.ajouterObjet("assets/ordi.png", 7);
                 featuress.set('dispo', false);
-                featuresDict['ordi'].feature.set('dispo', true);
+                featuresDict[7].feature.set('dispo', true);
               }
             }
           };
       });
     },
     methods: {
-      ajouterObjet(src, name) {
+      ajouterObjet(src, id) {
         this.inventaire.push({
           src: src,
-          name: name
+          id: id
         });
       },
       imageCliquee(item, index) {
@@ -284,9 +315,10 @@ Vue.createApp({
       validerCode() {
         console.log("Code saisi :", this.codeSaisi);
         if (this.codeSaisi == 5566) {
-          featuresDict['tacheo2'].feature.set('dispo', true);
+          featuresDict[6].feature.set('dispo', true);
+          featuresDict[5].feature.set('dispo', true)
           this.el.style.display = 'none';
-          featuresDict['tacheo1'].feature.set('dispo', false);
+          featuresDict[4].feature.set('dispo', false);
         } else {
           console.log('mauvais code')
         }

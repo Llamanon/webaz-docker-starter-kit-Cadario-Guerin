@@ -24,11 +24,12 @@ CREATE TABLE joueurs (
 CREATE TABLE objets (
     id SERIAL PRIMARY KEY,
     name TEXT,
-    point POINT,
+    point GEOMETRY,
     image TEXT,
     minZoomVisible INTEGER DEFAULT 15,
+    maxZoomVisible INTEGER DEFAULT 18,
     visible BOOLEAN DEFAULT FALSE,
-    attribut TEXT
+    attribut TEXT  -- or : objet recupereable; oc : classe code, ob : objet bloque
 );
 
 CREATE TABLE images (
@@ -37,12 +38,14 @@ CREATE TABLE images (
     url TEXT
 );
 
-INSERT INTO objets (name, point, image, attribut) VALUES
-('tacheometre', ST_SetSRID(ST_MakePoint(5.908640, 43.984596), 4326), 'assets/tacheo.jpg', 'or'),
-('papier code', ST_SetSRID(ST_MakePoint(5.775520, 43.979724), 4326), 'assets/tacheo.jpg', 'Objet recuperable'),
-('batterie', ST_SetSRID(ST_MakePoint(5.779087, 43.960778), 4326), 'assets/tacheo.jpg', 'Objet recuperable'),
-('gs18', ST_SetSRID(ST_MakePoint(5.773650, 43.962458), 4326), 'assets/tacheo.jpg', 'Objet recuperable'),
-('carte SD', ST_SetSRID(ST_MakePoint(5.773650, 43.962458), 4326), 'assets/tacheo.jpg', 'Objet recuperable')
+INSERT INTO objets (name, point, minZoomVisible, maxZoomVisible, visible, image, attribut) VALUES
+('tacheometre', '(5.7741, 43.96225)', 17, 19, TRUE, 'assets/tacheo.jpg', 'or'),
+('gs18', '(5.7741, 43.96225)', 17, 19, TRUE, 'assets/tacheo2.jpg', 'or'),
+('papier code', '(5.776772841012113, 43.97929133428411)', 18, 20, TRUE, 'assets/tacheo.jpg', 'or'),
+('tacheometre 2', '(5.7741, 43.96225)', 15, 19, FALSE, 'assets/tacheo.jpg', 'oc'),
+('carteSD', '(5.7789702, 43.960561)', 14, 19, FALSE, 'assets/carteSD.png', 'or'),
+('tacheometre 3', '(5.8387194, 43.9676102)', 14, 19, FALSE, 'assets/tacheo.jpg', 'ob'),
+('ordinateur', '(5.7741, 43.96225)', 14, 19, FALSE, 'assets/ordi.png', 'oc')
 ;
 
 
