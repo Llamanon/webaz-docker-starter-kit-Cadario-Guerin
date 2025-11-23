@@ -1,4 +1,12 @@
 let osmLayer = new ol.layer.Tile({
+    source: new ol.source.TileWMS({
+        url: 'http://localhost:8080/geoserver/projet_web',
+        crossOrigin: 'anonymous',
+        params: { LAYERS: 'projet_web:objets' },
+    }),
+});
+
+let wmsLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
         maxZoom: 19,
