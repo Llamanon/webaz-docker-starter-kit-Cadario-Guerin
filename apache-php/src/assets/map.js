@@ -329,14 +329,10 @@ Vue.createApp({
                 body: formData
             })
             .then(response => {
-                // Si Flight fait redirect(), il envoie 302
                 if (response.redirected) {
-                    window.location.href = response.url; // force la redirection
+                    window.location.href = response.url;
                 }
             });
-          /*fetch("http://localhost/map.php")
-            .then(response => response.text())
-            .then(data => console.log("Réponse PHP :", data));*/
         } else {
           console.log('mauvais code')
         }
