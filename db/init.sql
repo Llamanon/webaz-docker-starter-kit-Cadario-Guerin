@@ -46,21 +46,21 @@ CREATE TABLE images (
 INSERT INTO objets (name, point, minZoomVisible, maxZoomVisible, visible, image, attribut) VALUES
 ('tacheometre', ST_SetSRID(ST_MakePoint(5.7741, 43.96225), 4326), 17, 19, TRUE, 'assets/tacheo.jpg', 'or'),
 ('gs18', ST_SetSRID(ST_MakePoint(5.7741, 43.96225), 4326), 17, 19, TRUE, 'assets/tacheo2.jpg', 'or'),
-('papier code', ST_SetSRID(ST_MakePoint(5.776711068346986, 43.97925692971896), 4326), 18, 20, TRUE, 'assets/code.jpg', 'or'),
-('tacheometre 2', ST_SetSRID(ST_MakePoint(5.7741, 43.96225), 4326), 15, 19, FALSE, 'assets/tacheo.jpg', 'oc'),
-('carteSD', ST_SetSRID(ST_MakePoint(5.7789702, 43.960561), 4326), 14, 19, FALSE, 'assets/carteSD.png', 'or'),
-('tacheometre 3', ST_SetSRID(ST_MakePoint(5.8387194, 43.9676102), 4326), 14, 19, FALSE, 'assets/tacheo.jpg', 'ob'),
-('ordinateur', ST_SetSRID(ST_MakePoint(5.7741, 43.96225), 4326), 14, 19, FALSE, 'assets/ordi.png', 'oc');
+('papier code', ST_SetSRID(ST_MakePoint(5.776711068346986, 43.97925692971896), 4326), 18, 20, TRUE, 'assets/code.jpg', 'ob'),
+('tacheometre 2', ST_SetSRID(ST_MakePoint(5.7741, 43.96225), 4326), 17, 19, FALSE, 'assets/ordi.png', 'oc'),
+('carteSD', ST_SetSRID(ST_MakePoint(5.7789702, 43.960561), 4326), 18, 20, FALSE, 'assets/carteSD.png', 'or'),
+('tacheometre 3', ST_SetSRID(ST_MakePoint(5.8387194, 43.9676102), 4326), 17, 19, FALSE, 'assets/photo.jpg', 'ob'),
+('ordinateur', ST_SetSRID(ST_MakePoint(5.7741, 43.96225), 4326), 17, 19, FALSE, 'assets/ordi.png', 'oc');
 
 
 
 INSERT INTO images (name, ratio_taille, url) VALUES
 ('tacheometre', 0.3, 'assets/tacheo.jpg'),
 ('gs18', 0.1, 'assets/tacheo2.jpg'),
-('papier code', 1, 'assets/code.jpg'),
-('tacheometre 2', 0.3, 'assets/tacheo.jpg'),
+('papier code', 0.1, 'assets/code.jpg'),
+('tacheometre 2', 0.3, 'assets/ordi.png'),
 ('carteSD', 0.03, 'assets/carteSD.png'),
-('tacheometre 3', 0.3, 'assets/tacheo.jpg'),
+('tacheometre 3', 0.3, 'assets/photo.jpg'),
 ('ordinateur', 0.1, 'assets/tacheo.png')
 ;
 

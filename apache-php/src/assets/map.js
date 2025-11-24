@@ -1,5 +1,5 @@
 
-//heatmap geoserver
+//heatmap
 let wsmLayer = new ol.layer.Tile({
     source: new ol.source.TileWMS({
         url: 'http://localhost:8080/geoserver/projet_web/wms',
@@ -8,7 +8,7 @@ let wsmLayer = new ol.layer.Tile({
     }),
 });
 
-//carte openlayers avec tuiles openstreetmap
+//carte openlayers
 let osmLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -17,19 +17,17 @@ let osmLayer = new ol.layer.Tile({
     }),
 });
 
-//récupération des données dans les tables sql
+//récupération des données sql
 let objets_php =  document.getElementById("data_objet").dataset.objets;
 let objets = JSON.parse(objets_php);
 
-let images_php =  document.getElementById("data_image").dataset.objets;
+let images_php = document.getElementById("data_image").dataset.objets;
 let images = JSON.parse(images_php);
 
-//initialisation du jeu avec position initiale à forcalquier
+//initialisation du jeu avec début à forcalquier
 let map = new ol.Map({
     target: 'map',
-    layers: [
-        osmLayer
-    ],
+    layers: [osmLayer],
     view: new ol.View({
         center: ol.proj.fromLonLat([5.773880655629994, 43.962061335298245]),
         zoom: 19,
@@ -49,82 +47,67 @@ checkbox.addEventListener('change', function() {
     }
 });
 
-
 let featuresDict = {};
-
 objets.forEach(item => {
-  let coords = JSON.parse(item.point).coordinates
-  let key = item.id;
-  let temp_dispo = ''
-  if (item.visible == 't') {
-    temp_dispo = true
-  } else {
-    temp_dispo = false
-  }
+    let coords = JSON.parse(item.point).coordinates;
+    let key = item.id;
+    let temp_dispo = item.visible === 't';
 
-  let image_corres = images.find(obj => obj.id_objet == item.id)
-  featuresDict[key] = {
-    coords: coords,
-    minZoom: item.minzoomvisible,
-    maxZoom: item.maxzoomvisible,
-    icon: item.image,
-    dispo: temp_dispo,
-    echelle: image_corres.ratio_taille,
-    classe: item.attribut
-  };
+    let image_corres = images.find(obj => obj.id_objet == item.id);
+    featuresDict[key] = {
+        coords: coords,
+        minZoom: item.minzoomvisible,
+        maxZoom: item.maxzoomvisible,
+        icon: item.image,
+        dispo: temp_dispo,
+        echelle: image_corres.ratio_taille,
+        classe: item.attribut
+    };
 });
-
 
 let featuresList = [];
 for (let id in featuresDict) {
-  let f = new ol.Feature({
-    geometry: new ol.geom.Point(ol.proj.fromLonLat(featuresDict[id].coords))
-  });
-  f.set('id', id);
-  f.set('minZoom', featuresDict[id].minZoom);
-  f.set('maxZoom', featuresDict[id].maxZoom);
-  f.set('icon', featuresDict[id].icon);
-  f.set('dispo', featuresDict[id].dispo);
-  f.set('echelle', featuresDict[id].echelle)
-  f.set('classe', featuresDict[id].classe)
-  featuresList.push(f);
-  featuresDict[id].feature = f;
-};
-
-
-
+    let f = new ol.Feature({
+        geometry: new ol.geom.Point(ol.proj.fromLonLat(featuresDict[id].coords))
+    });
+    f.set('id', id);
+    f.set('minZoom', featuresDict[id].minZoom);
+    f.set('maxZoom', featuresDict[id].maxZoom);
+    f.set('icon', featuresDict[id].icon);
+    f.set('dispo', featuresDict[id].dispo);
+    f.set('echelle', featuresDict[id].echelle);
+    f.set('classe', featuresDict[id].classe);
+    featuresList.push(f);
+    featuresDict[id].feature = f;
+}
 
 let couche = new ol.layer.Vector({
-  source: new ol.source.Vector({
-    features: featuresList
-  }),
-  style: function (feature) {
-    let zoom = map.getView().getZoom();
-    let min = feature.get('minZoom');
-    let max = feature.get('maxZoom');
-    let dispo = feature.get('dispo');
-    if (zoom < min || zoom > max) return null;
+    source: new ol.source.Vector({ features: featuresList }),
+    style: function (feature) {
+        let zoom = map.getView().getZoom();
+        let min = feature.get('minZoom');
+        let max = feature.get('maxZoom');
+        let dispo = feature.get('dispo');
 
-    if (dispo) return new ol.style.Style({
-      image: new ol.style.Icon({
-        src: feature.get('icon'),
-        scale: feature.get('echelle')
-      })
-    });
-    return null
-  }
+        if (zoom < min || zoom > max) return null;
+
+        if (dispo) return new ol.style.Style({
+            image: new ol.style.Icon({
+                src: feature.get('icon'),
+                scale: feature.get('echelle')
+            })
+        });
+
+        return null;
+    }
 });
 
-
 map.addLayer(couche);
-
-
-
 
 Vue.createApp({
     data() {
         return {
-            user : "test",
+            user: "test",
             inventaire: [],
             selectedIndex: null,
             codeSaisi: "",
@@ -138,16 +121,17 @@ Vue.createApp({
     },
     mounted() {
       document.getElementById('commentaire').textContent = this.commentaire;
-      //popup pour les codes saisis
+      //popups pour les codes saisis
       this.el = document.getElementById('popup');
       this.el2 = document.getElementById('popup2');
       
       
 
-      //timer score
+      //timer pour le score
       this.timer = setInterval(() => {
           this.time++;
 
+        // convertit en mm:ss
         let minutes = Math.floor(this.time / 60);
         let seconds = this.time % 60;
 
@@ -158,11 +142,28 @@ Vue.createApp({
       }, 1000);
 
 
-      map.on('moveend', () => {
-        couche.getSource().getFeatures().forEach(f => {
-          f.changed();
+        map.on('moveend', () => {
+            couche.getSource().getFeatures().forEach(f => f.changed());
         });
 
+        map.on('dblclick', evt => {
+            const featuress = map.forEachFeatureAtPixel(evt.pixel, f => f);
+
+            if (featuress) {
+              let src = couche.getStyle()(featuress).getImage().getSrc();
+              let coord = evt.coordinate;
+              if (featuress.get("classe") == "ob") {
+                  if (this.selectedIndex != null && this.inventaire[this.selectedIndex].id == 2) {
+                      this.commentaire = "le code est 5566, rend toi au centre ign à forca";
+                      featuresDict[4].feature.set('dispo', true);
+                      featuresDict[3].feature.set('dispo', false);
+                  } else {
+                      this.commentaire = 'choisi un ou le bon tacheo';
+                  }
+            }
+            };
+            document.getElementById('commentaire').textContent = this.commentaire;
+        });
       });
       //interaction avec le papier code, vérifie que le double click est effectué au bon endroit
       map.on('dblclick', evt => {
@@ -185,11 +186,11 @@ Vue.createApp({
           const featuress = map.forEachFeatureAtPixel(evt.pixel, f => f);
           if (featuress) {
             const src = couche.getStyle()(featuress).getImage().getSrc();
-            //condition pour les objets qui sont récupérables
+            //condition pour les objets récupérables
             if (featuress.get("classe") == "or") {
               this.ajouterObjet(src, featuress.get("id"));
               couche.getSource().removeFeature(featuress);
-              //condition pour le premier code, affichage du premier popup
+              //condition pour le premier code, affichage du popup
             } else if (featuress.get("classe") == 'oc' && featuress.get("id") == 4) {
               let popup = new ol.Overlay({
                   element: this.el,
@@ -199,7 +200,7 @@ Vue.createApp({
               popup.setPosition(featuress.getGeometry().getCoordinates());
               map.addOverlay(popup);
               this.el.style.display = 'block';
-              //condition pour le 2e code, affichage du 2e popup
+              //condition pour le 2e code, affichage du 2e popup;
             } else if (featuress.get("classe") == 'oc' && featuress.get("id") == 7) {
               let popup2 = new ol.Overlay({
                   element: this.el2,
@@ -221,55 +222,45 @@ Vue.createApp({
       });
     },
     methods: {
-      ajouterObjet(src, id) {
-        this.inventaire.push({
-          src: src,
-          id: id
-        });
-      },
-      imageCliquee(item, index) {
-        if (this.selectedIndex == index) {
-          this.selectedIndex = null
-        } else {
-        this.selectedIndex = index; 
-        }
-      },
+        ajouterObjet(src, id) {
+            this.inventaire.push({ src, id });
+        },
+        imageCliquee(item, index) {
+            this.selectedIndex = this.selectedIndex === index ? null : index;
+        },
+        validerCode() {
+            if (this.codeSaisi == 5566) {
+                this.commentaire = "bien, poursuis ta journée en allant à la chapelle de pierrerue pour de la photogra"
+                featuresDict[6].feature.set('dispo', true);
+                featuresDict[5].feature.set('dispo', true);
+                this.el.style.display = 'none';
+                featuresDict[4].feature.set('dispo', false);
+            } else {
+                this.commentaire = 'mauvais code';
+            };
+            document.getElementById('commentaire').textContent = this.commentaire;
+        },
+        validerCode2() {
+            if (this.codeSaisi2 == 7788) {
+                this.commentaire = "gagne"
+                this.el2.style.display = 'none';
+                featuresDict[7].feature.set('dispo', false);
+                clearInterval(this.timer);
 
-      //méthode qui vérifie que le premier code est bon, fait apparaître le prochain objet
-      validerCode() {
-        if (this.codeSaisi == 5566) {
-          featuresDict[6].feature.set('dispo', true);
-          featuresDict[5].feature.set('dispo', true)
-          this.el.style.display = 'none';
-          featuresDict[4].feature.set('dispo', false);
-        } else {
-          this.commentaire = 'mauvais code';
+                const formData = new FormData();
+                formData.append('timer', this.time);
+                fetch("/time", {
+                    method: 'POST',
+                    body: formData
+                }).then(response => {
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                    }
+                });
+            } else {
+                this.commentaire = 'mauvais code';
+            };
+            document.getElementById('commentaire').textContent = this.commentaire;
         }
-      },
-
-      //vérifie que le 2e code est bon, stoppe le timer et l'envoie à index
-      validerCode2() {
-        if (this.codeSaisi2 == 7788) {
-          this.el2.style.display = 'none';
-          featuresDict[7].feature.set('dispo', false);
-          clearInterval(this.timer);
-          
-          console.log('oui je suis la')
-          const formData = new FormData();
-          formData.append('timer', this.time);
-          console.log(this.time, formData)
-            fetch("/time", {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (response.redirected) {
-                    window.location.href = response.url;
-                }
-            });
-        } else {
-          this.commentaire = 'mauvais code';
-        }
-      }
-    }  
+    }
 }).mount('#app');
