@@ -1,0 +1,26 @@
+# Consignes d'installation
+
+Démarrer Docker et importer le Geoserver 
+
+# paramétrage du Geoserver
+
+heatmap configurée par rapport à l'attribut maxzoomvisible, avec un rayon de 50
+
+# Base de données
+
+Elle s'initialise grâce au init.sql au lancement de la stack
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
