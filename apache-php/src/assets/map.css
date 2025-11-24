@@ -45,6 +45,22 @@ grid-template-rows: 12% 22% 22% 22% 22%;
     
 }
 
+/* Conteneur de la checkbox (affiché au-dessus de la map) */
+#checkbox-container {
+    position: absolute;
+    top: 1vh;
+    right: 21vw;
+
+    background: rgba(255, 255, 255, 0.8);
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+
+    z-index: 200;   /* plus haut que popups */
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
 
 
 #commentaire {

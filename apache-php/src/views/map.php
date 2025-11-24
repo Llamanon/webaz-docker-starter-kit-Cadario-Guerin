@@ -37,6 +37,12 @@
 
     <div id="score">Temps : {{ timer }} s</div>
 
+    <div id="checkbox-container">
+        <input type="checkbox" id="maCase">
+        <label for="maCase">Triche</label>
+    </div>
+
+
     <div id="data_objet" data-objets='<?php echo $objets_json; ?>'> </div>
 
     <div id="data_image" data-objets='<?php echo $images_json; ?>'> </div>
