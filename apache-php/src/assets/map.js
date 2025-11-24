@@ -1,5 +1,5 @@
 
-//heatmap
+//heatmap geoserver
 let wsmLayer = new ol.layer.Tile({
     source: new ol.source.TileWMS({
         url: 'http://localhost:8080/geoserver/projet_web/wms',
@@ -8,7 +8,7 @@ let wsmLayer = new ol.layer.Tile({
     }),
 });
 
-//carte openlayers
+//carte openlayers avec tuiles openstreetmap
 let osmLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -17,14 +17,14 @@ let osmLayer = new ol.layer.Tile({
     }),
 });
 
-//récupération des données sql
+//récupération des données dans les tables sql
 let objets_php =  document.getElementById("data_objet").dataset.objets;
 let objets = JSON.parse(objets_php);
 
 let images_php =  document.getElementById("data_image").dataset.objets;
 let images = JSON.parse(images_php);
 
-//initialisation du jeu avec début à forcalquier
+//initialisation du jeu avec position initiale à forcalquier
 let map = new ol.Map({
     target: 'map',
     layers: [
@@ -138,17 +138,16 @@ Vue.createApp({
     },
     mounted() {
       document.getElementById('commentaire').textContent = this.commentaire;
-      //popups pour les codes saisis
+      //popup pour les codes saisis
       this.el = document.getElementById('popup');
       this.el2 = document.getElementById('popup2');
       
       
 
-      //timer pour le score
+      //timer score
       this.timer = setInterval(() => {
           this.time++;
 
-        // convertit en mm:ss
         let minutes = Math.floor(this.time / 60);
         let seconds = this.time % 60;
 
@@ -165,7 +164,7 @@ Vue.createApp({
         });
 
       });
-      //interaction avec le papier code, vérifie que le double click est au bon endroit
+      //interaction avec le papier code, vérifie que le double click est effectué au bon endroit
       map.on('dblclick', evt => {
         let coord = evt.coordinate;
         if (coord[0] >= 643060.5345882539 && coord[0] <= 643071.2921793308 && coord[1] >= 5462232.7063586535 && coord[1] <= 5462244.240776347) {
@@ -186,11 +185,11 @@ Vue.createApp({
           const featuress = map.forEachFeatureAtPixel(evt.pixel, f => f);
           if (featuress) {
             const src = couche.getStyle()(featuress).getImage().getSrc();
-            //condition pour les objets récupérables
+            //condition pour les objets qui sont récupérables
             if (featuress.get("classe") == "or") {
               this.ajouterObjet(src, featuress.get("id"));
               couche.getSource().removeFeature(featuress);
-              //condition pour le premier code, affichage du popup
+              //condition pour le premier code, affichage du premier popup
             } else if (featuress.get("classe") == 'oc' && featuress.get("id") == 4) {
               let popup = new ol.Overlay({
                   element: this.el,
@@ -200,7 +199,7 @@ Vue.createApp({
               popup.setPosition(featuress.getGeometry().getCoordinates());
               map.addOverlay(popup);
               this.el.style.display = 'block';
-              //condition pour le 2e code, affichage du 2e popup;
+              //condition pour le 2e code, affichage du 2e popup
             } else if (featuress.get("classe") == 'oc' && featuress.get("id") == 7) {
               let popup2 = new ol.Overlay({
                   element: this.el2,
