@@ -33,7 +33,7 @@
         </div>
     </div>
 
-    <div id="commentaire">commentaire</div>
+    <div id="commentaire"> {{commentaire}}</div>
 
     <div id="score">Temps : {{ timer }} s</div>
 

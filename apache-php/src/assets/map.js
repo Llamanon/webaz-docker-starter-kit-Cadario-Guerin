@@ -1,3 +1,5 @@
+
+//heatmap
 let wsmLayer = new ol.layer.Tile({
     source: new ol.source.TileWMS({
         url: 'http://localhost:8080/geoserver/projet_web',
@@ -6,6 +8,7 @@ let wsmLayer = new ol.layer.Tile({
     }),
 });
 
+//carte openlayers
 let osmLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -14,20 +17,14 @@ let osmLayer = new ol.layer.Tile({
     }),
 });
 
-
+//récupération des données sql
 let objets_php =  document.getElementById("data_objet").dataset.objets;
 let objets = JSON.parse(objets_php);
 
 let images_php =  document.getElementById("data_image").dataset.objets;
 let images = JSON.parse(images_php);
-console.log(images);
 
-//tacheo et tacheoGS à forca des le debut sur le meme point
-//tacheo1 a forca pour le code
-//tacheo2 a saint pierre pour les photos
-
-
-
+//initialisation du jeu avec début à forcalquier
 let map = new ol.Map({
     target: 'map',
     layers: [
@@ -44,7 +41,7 @@ let map = new ol.Map({
 let featuresDict = {};
 
 objets.forEach(item => {
-  let coords = item.point.replace(/[()]/g, '').split(',').map(Number);
+  let coords = JSON.parse(item.point).coordinates
   let key = item.id;
   let temp_dispo = ''
   if (item.visible == 't') {
@@ -54,7 +51,6 @@ objets.forEach(item => {
   }
 
   let image_corres = images.find(obj => obj.id_objet == item.id)
-
   featuresDict[key] = {
     coords: coords,
     minZoom: parseInt(item.minzoomvisible),
@@ -66,60 +62,6 @@ objets.forEach(item => {
   };
 });
 
-
-/*
-let featuresDict = {
-  tacheo: {
-    coords: [5.7741, 43.96225],
-    minZoom: 17,
-    maxZoom: 19,
-    icon: 'assets/tacheo.jpg',
-    dispo: true,
-    echelle: 0.3
-  },
-  tacheo1: {
-    coords: [5.7741, 43.96225],
-    minZoom: 14,
-    maxZoom: 19,
-    icon: 'assets/tacheo.jpg',
-    dispo: false,
-    echelle: 0.3
-  },
-  tacheo2: {
-    coords: [5.8387194, 43.9676102],
-    minZoom: 12,
-    maxZoom: 19,
-    icon: 'assets/tacheo.jpg',
-    dispo: true,
-    echelle: 0.3
-  },
-  tacheoGS: {
-    coords: [5.7741, 43.96225],
-    minZoom: 17,
-    maxZoom: 19,
-    icon: 'assets/tacheo2.jpg',
-    dispo: true,
-    echelle: 0.1
-  },
-  carteSD: {
-    coords: [5.7789702, 43.960561],
-    minZoom: 14,
-    maxZoom: 19,
-    icon: 'assets/carteSD.png',
-    dispo: true,
-    echelle: 0.03
-  },
-  ordi: {
-    coords: [5.7741, 43.96225],
-    minZoom: 14,
-    maxZoom: 19,
-    icon: 'assets/ordi.png',
-    dispo: false,
-    echelle: 0.3
-  }
-};
-
-*/
 
 let featuresList = [];
 for (let id in featuresDict) {
@@ -137,7 +79,6 @@ for (let id in featuresDict) {
   featuresDict[id].feature = f;
 };
 
-console.log(featuresDict);
 
 
 
@@ -161,34 +102,6 @@ let couche = new ol.layer.Vector({
     return null
   }
 });
-console.log(featuresDict)
-/*
-
-let couche = new ol.layer.Vector({
-  source: new ol.source.Vector({
-    features: featuresList
-  }),
-  style: function (feature) {
-    let zoom = map.getView().getZoom();
-    let min = feature.get('minZoom');
-    let max = feature.get('maxZoom');
-
-    if (zoom < min || zoom > max) return null;
-
-    return new ol.style.Style({
-      image: new ol.style.Icon({
-        src: 'assets/tacheo.jpg',
-        scale: 0.3
-      })
-    });
-  }
-});
-
-
-*/
-
-
-
 
 
 map.addLayer(couche);
@@ -207,13 +120,19 @@ Vue.createApp({
             el: null,
             el2: null,
             time: 0,
-            timer: null
+            timer: null,
+            commentaire: "COUCOU, bienvenu a forca pour cette journée de stage il faut que tu récupere le tachéomètre vert et que tu ailles stationner au mourres. Pour se faire tu double-clic entre le banc et le panneau, zoom bien !"
           }
     },
     mounted() {
+      document.getElementById('commentaire').textContent = this.commentaire;
+      //popups pour les codes saisis
       this.el = document.getElementById('popup');
       this.el2 = document.getElementById('popup2');
+      
+      
 
+      //timer pour le score
       this.timer = setInterval(() => {
           this.time++;
 
@@ -234,31 +153,32 @@ Vue.createApp({
         });
 
       });
+      //interaction avec le papier code, vérifie que le double click est au bon endroit
       map.on('dblclick', evt => {
         let coord = evt.coordinate;
         if (coord[0] >= 643060.5345882539 && coord[0] <= 643071.2921793308 && coord[1] >= 5462232.7063586535 && coord[1] <= 5462244.240776347) {
             if (this.selectedIndex != null && this.inventaire[this.selectedIndex].id == 2) {
-            console.log('le code est 5566');
+            this.commentaire = "le code est 5566, rend toi au centre ign à forca";
             featuresDict[4].feature.set('dispo', true);
           } else {
-            console.log('choisi un/le bon tacheo')
+            this.commentaire = 'choisi un/le bon tacheo';
           };
         } else {
-          console.log('pas au bon endroit')
+          this.commentaire = 'pas au bon endroit';
           
         }
       });
 
       map.on('click', evt => {
-        let center = evt.coordinate; // renvoie en projection EPSG:3857 ------------------------------------------------------------------------------
-        let lonLat = ol.proj.toLonLat(center);  // convertit en [lon, lat]
-        console.log(ol.proj.toLonLat([643060.5345882539, 5462232.7063586535]), center);
+        document.getElementById('commentaire').textContent = this.commentaire;
           const featuress = map.forEachFeatureAtPixel(evt.pixel, f => f);
           if (featuress) {
             const src = couche.getStyle()(featuress).getImage().getSrc();
+            //condition pour les objets récupérables
             if (featuress.get("classe") == "or") {
               this.ajouterObjet(src, featuress.get("id"));
               couche.getSource().removeFeature(featuress);
+              //condition pour le premier code, affichage du popup
             } else if (featuress.get("classe") == 'oc' && featuress.get("id") == 4) {
               let popup = new ol.Overlay({
                   element: this.el,
@@ -268,6 +188,7 @@ Vue.createApp({
               popup.setPosition(featuress.getGeometry().getCoordinates());
               map.addOverlay(popup);
               this.el.style.display = 'block';
+              //condition pour le 2e code, affichage du 2e popup;
             } else if (featuress.get("classe") == 'oc' && featuress.get("id") == 7) {
               let popup2 = new ol.Overlay({
                   element: this.el2,
@@ -278,7 +199,7 @@ Vue.createApp({
               map.addOverlay(popup2);
               this.el2.style.display = 'block';
             } else if (featuress.get("classe") == 'ob') {
-              console.log('bloque');
+              this.commentaire = 'bloque';
               if (this.selectedIndex != null && this.inventaire[this.selectedIndex].id == 5) {
                 this.ajouterObjet("assets/ordi.png", 7);
                 featuress.set('dispo', false);
@@ -302,19 +223,21 @@ Vue.createApp({
         this.selectedIndex = index; 
         }
       },
+
+      //méthode qui vérifie que le premier code est bon, fait apparaître le prochain objet
       validerCode() {
-        console.log("Code saisi :", this.codeSaisi);
         if (this.codeSaisi == 5566) {
           featuresDict[6].feature.set('dispo', true);
           featuresDict[5].feature.set('dispo', true)
           this.el.style.display = 'none';
           featuresDict[4].feature.set('dispo', false);
         } else {
-          console.log('mauvais code')
+          this.commentaire = 'mauvais code';
         }
       },
+
+      //vérifie que le 2e code est bon, stoppe le timer et l'envoie à index
       validerCode2() {
-        console.log("Code saisi :", this.codeSaisi2);
         if (this.codeSaisi2 == 7788) {
           this.el2.style.display = 'none';
           featuresDict[7].feature.set('dispo', false);
@@ -329,7 +252,7 @@ Vue.createApp({
             .then(response => response.text())
             .then(data => console.log("Réponse PHP :", data));
         } else {
-          console.log('mauvais code')
+          this.commentaire = 'mauvais code';
         }
       }
     }  
