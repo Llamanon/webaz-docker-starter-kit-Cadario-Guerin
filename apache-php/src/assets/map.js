@@ -2,7 +2,7 @@
 //heatmap
 let wsmLayer = new ol.layer.Tile({
     source: new ol.source.TileWMS({
-        url: 'http://localhost:8080/geoserver/projet_web',
+        url: 'http://localhost:8080/geoserver/projet_web/wms',
         crossOrigin: 'anonymous',
         params: { LAYERS: 'projet_web:objets' },
     }),
