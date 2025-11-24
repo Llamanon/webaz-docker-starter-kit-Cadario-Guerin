@@ -26,7 +26,7 @@ Flight::route('/map', function() {
 
     $link = pg_connect("host=$host port=$port dbname=$dbname user=$user password=$pass");
 
-    $sql = "SELECT * FROM objets";
+    $sql = "SELECT id, name, ST_AsGeoJSON(point) AS point, image, minZoomVisible, maxZoomVisible, visible, attribut FROM objets";
 
     $query = pg_query($link, $sql);
     $objets = pg_fetch_all($query);
