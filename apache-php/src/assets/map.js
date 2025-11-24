@@ -29,8 +29,10 @@ let map = new ol.Map({
     }),
 });
 
-const checkbox = document.getElementById('maCase');
-checkbox.addEventListener('change', function () {
+
+let checkbox = document.getElementById('maCase');
+
+checkbox.addEventListener('change', function() {
     if (this.checked) {
         map.addLayer(wsmLayer);
         console.log('ajouté');
@@ -109,8 +111,8 @@ Vue.createApp({
             el2: null,
             time: 0,
             timer: null,
-            commentaire: "COUCOU, bienvenu a forca pour cette journée de stage il faut que tu récupere le tachéomètre vert et que tu ailles stationner au mourres. Pour se faire tu double-clic entre le banc et le panneau, zoom bien !"
-        };
+            commentaire: "COUCOU, bienvenue à forca pour cette journée de stage ! Il faut que tu récupères le tachéomètre vert et que tu ailles stationner aux Mourres. Pour se faire, double-clic entre le banc et le panneau, zoom bien !"
+          }
     },
     mounted() {
         document.getElementById('commentaire').textContent = this.commentaire;
