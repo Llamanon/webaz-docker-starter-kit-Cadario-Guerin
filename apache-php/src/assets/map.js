@@ -142,28 +142,11 @@ Vue.createApp({
       }, 1000);
 
 
-        map.on('moveend', () => {
-            couche.getSource().getFeatures().forEach(f => f.changed());
+      map.on('moveend', () => {
+        couche.getSource().getFeatures().forEach(f => {
+          f.changed();
         });
 
-        map.on('dblclick', evt => {
-            const featuress = map.forEachFeatureAtPixel(evt.pixel, f => f);
-
-            if (featuress) {
-              let src = couche.getStyle()(featuress).getImage().getSrc();
-              let coord = evt.coordinate;
-              if (featuress.get("classe") == "ob") {
-                  if (this.selectedIndex != null && this.inventaire[this.selectedIndex].id == 2) {
-                      this.commentaire = "le code est 5566, rend toi au centre ign à forca";
-                      featuresDict[4].feature.set('dispo', true);
-                      featuresDict[3].feature.set('dispo', false);
-                  } else {
-                      this.commentaire = 'choisi un ou le bon tacheo';
-                  }
-            }
-            };
-            document.getElementById('commentaire').textContent = this.commentaire;
-        });
       });
       //interaction avec le papier code, vérifie que le double click est effectué au bon endroit
       map.on('dblclick', evt => {
@@ -180,46 +163,65 @@ Vue.createApp({
           
         }
       });
+        map.on('dblclick', evt => {
+            const featuress = map.forEachFeatureAtPixel(evt.pixel, f => f);
 
-      map.on('click', evt => {
-        document.getElementById('commentaire').textContent = this.commentaire;
-          const featuress = map.forEachFeatureAtPixel(evt.pixel, f => f);
-          if (featuress) {
-            const src = couche.getStyle()(featuress).getImage().getSrc();
-            //condition pour les objets récupérables
-            if (featuress.get("classe") == "or") {
-              this.ajouterObjet(src, featuress.get("id"));
-              couche.getSource().removeFeature(featuress);
-              //condition pour le premier code, affichage du popup
-            } else if (featuress.get("classe") == 'oc' && featuress.get("id") == 4) {
-              let popup = new ol.Overlay({
-                  element: this.el,
-                  positioning: 'bottom-center',
-                  offset: [70, -30],
-              });
-              popup.setPosition(featuress.getGeometry().getCoordinates());
-              map.addOverlay(popup);
-              this.el.style.display = 'block';
-              //condition pour le 2e code, affichage du 2e popup;
-            } else if (featuress.get("classe") == 'oc' && featuress.get("id") == 7) {
-              let popup2 = new ol.Overlay({
-                  element: this.el2,
-                  positioning: 'bottom-center',
-                  offset: [70, -30],
-              });
-              popup2.setPosition(featuress.getGeometry().getCoordinates());
-              map.addOverlay(popup2);
-              this.el2.style.display = 'block';
-            } else if (featuress.get("classe") == 'ob') {
-              this.commentaire = 'bloque';
-              if (this.selectedIndex != null && this.inventaire[this.selectedIndex].id == 5) {
-                this.ajouterObjet("assets/ordi.png", 7);
-                featuress.set('dispo', false);
-                featuresDict[7].feature.set('dispo', true);
-              }
+            if (featuress) {
+              const src = couche.getStyle()(featuress).getImage().getSrc();
+              let coord = evt.coordinate;
+              if (featuress.get("classe") == "ob") {
+                  if (this.selectedIndex != null && this.inventaire[this.selectedIndex].id == 2) {
+                      this.commentaire = "le code est 5566, rend toi au centre ign à forca";
+                      featuresDict[4].feature.set('dispo', true);
+                      featuresDict[3].feature.set('dispo', false);
+                  } else {
+                      this.commentaire = 'choisi un ou le bon tacheo';
+                  }
             }
-          };
-      });
+            };
+            document.getElementById('commentaire').textContent = this.commentaire;
+        });
+
+        map.on('click', evt => {
+            const featuress = map.forEachFeatureAtPixel(evt.pixel, f => f);
+
+            if (featuress) {
+                const src = couche.getStyle()(featuress).getImage().getSrc();
+
+                if (featuress.get("classe") == "or") {
+                    this.ajouterObjet(src, featuress.get("id"));
+                    couche.getSource().removeFeature(featuress);
+                } else if (featuress.get("classe") == 'oc' && featuress.get("id") == 4) {
+                    let popup = new ol.Overlay({
+                        element: this.el,
+                        positioning: 'bottom-center',
+                        offset: [70, -30],
+                    });
+                    popup.setPosition(featuress.getGeometry().getCoordinates());
+                    map.addOverlay(popup);
+                    this.el.style.display = 'block';
+                } else if (featuress.get("classe") == 'oc' && featuress.get("id") == 7) {
+                    let popup2 = new ol.Overlay({
+                        element: this.el2,
+                        positioning: 'bottom-center',
+                        offset: [70, -30],
+                    });
+                    popup2.setPosition(featuress.getGeometry().getCoordinates());
+                    map.addOverlay(popup2);
+                    this.el2.style.display = 'block';
+                } else if (featuress.get("classe") == 'ob' && featuress.get("id") == 6) {
+                    if (this.selectedIndex != null && this.inventaire[this.selectedIndex].id == 5) {
+                        this.commentaire = "bien joué le code est 7788, va le donner au centre ign pour finir ta journée"
+                        this.ajouterObjet("assets/ordi.png", 7);
+                        featuress.set('dispo', false);
+                        featuresDict[7].feature.set('dispo', true);
+                    } else {
+                      this.commentaire = "tu es sûr d'avoir trouvé/selectionné la carte sd que tu as oubliée à la boulangerie de forca ?";
+                    }
+                }
+            };
+            document.getElementById('commentaire').textContent = this.commentaire;
+        });
     },
     methods: {
         ajouterObjet(src, id) {
@@ -230,7 +232,7 @@ Vue.createApp({
         },
         validerCode() {
             if (this.codeSaisi == 5566) {
-                this.commentaire = "bien, poursuis ta journée en allant à la chapelle de pierrerue pour de la photogra"
+                this.commentaire = "bien, poursuis ta journée en allant à la chapelle de pierrerue pour un peu de photogra"
                 featuresDict[6].feature.set('dispo', true);
                 featuresDict[5].feature.set('dispo', true);
                 this.el.style.display = 'none';
