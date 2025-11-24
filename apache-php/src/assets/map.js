@@ -242,15 +242,24 @@ Vue.createApp({
           this.el2.style.display = 'none';
           featuresDict[7].feature.set('dispo', false);
           clearInterval(this.timer);
-
-
-          fetch("http://localhost/map.php", {
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: "timer=" + encodeURIComponent(this.timer)
+          
+          console.log('oui je suis la')
+          const formData = new FormData();
+          formData.append('timer', this.time);
+          console.log(this.time, formData)
+            fetch("/time", {
+                method: 'POST',
+                body: formData
             })
+            .then(response => {
+                // Si Flight fait redirect(), il envoie 302
+                if (response.redirected) {
+                    window.location.href = response.url; // force la redirection
+                }
+            });
+          /*fetch("http://localhost/map.php")
             .then(response => response.text())
-            .then(data => console.log("Réponse PHP :", data));
+            .then(data => console.log("Réponse PHP :", data));*/
         } else {
           this.commentaire = 'mauvais code';
         }
