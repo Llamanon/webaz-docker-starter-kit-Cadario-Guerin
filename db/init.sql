@@ -21,6 +21,7 @@ CREATE TABLE joueurs (
     score INTEGER DEFAULT 2147483647
 );
 
+-- Créer une table objets qui contient les informationd nécessaires au code
 CREATE TABLE objets (
     id SERIAL PRIMARY KEY,
     name TEXT,
@@ -29,9 +30,10 @@ CREATE TABLE objets (
     minZoomVisible INTEGER DEFAULT 15,
     maxZoomVisible INTEGER DEFAULT 18,
     visible BOOLEAN DEFAULT FALSE,
-    attribut TEXT  -- or : objet recupereable; oc : classe code, ob : objet bloque
+    attribut TEXT  -- or : objet recuperable; oc : classe code, ob : objet bloque
 );
 
+-- Créer une table image qui contient l'adresse de chaque image et l'échelle utilisée pour l'afficher
 CREATE TABLE images (
     id SERIAL PRIMARY KEY,
     id_objet INTEGER,
@@ -40,6 +42,7 @@ CREATE TABLE images (
     url TEXT
 );
 
+-- Insérer dans la table objets les informations des objets
 INSERT INTO objets (name, point, minZoomVisible, maxZoomVisible, visible, image, attribut) VALUES
 ('tacheometre', ST_SetSRID(ST_MakePoint(5.7741, 43.96225), 4326), 17, 19, TRUE, 'assets/tacheo.jpg', 'or'),
 ('gs18', ST_SetSRID(ST_MakePoint(5.7741, 43.96225), 4326), 17, 19, TRUE, 'assets/tacheo2.jpg', 'or'),

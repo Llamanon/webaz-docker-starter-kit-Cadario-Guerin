@@ -37,17 +37,13 @@ let map = new ol.Map({
 });
 
 
-// Récupère la checkbox
-const checkbox = document.getElementById('maCase');
+let checkbox = document.getElementById('maCase');
 
-// Ajoute un listener sur le changement d'état
 checkbox.addEventListener('change', function() {
     if (this.checked) {
-        // Si cochée, ajoute la heatmap
         map.addLayer(wsmLayer);
         console.log('ajouté');
     } else {
-        // Sinon, retire la heatmap
         map.removeLayer(wsmLayer);
         console.log('retire');
     }
