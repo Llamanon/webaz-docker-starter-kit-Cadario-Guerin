@@ -73,3 +73,14 @@ height: 100%;
   display: none; /* caché par défaut */
   z-index: 100;
 }
+
+#popup2 {
+  position: absolute;
+  background-color: white;
+  padding: 10px;
+  border: 2px solid black;
+  border-radius: 5px;
+  min-width: 150px;
+  display: none; /* caché par défaut */
+  z-index: 100;
+}

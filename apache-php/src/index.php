@@ -22,9 +22,13 @@ Flight::route('/map', function() {
     $query = pg_query($link, $sql);
     $objets = pg_fetch_all($query);
 
-    $results = json_encode($objets);
+    $sql_im = "SELECT * FROM images";
 
-    Flight::render('map', ['objets_json' => json_encode($objets)]);
+    $query_im = pg_query($link, $sql_im);
+    $images = pg_fetch_all($query_im);
+
+
+    Flight::render('map', ['objets_json' => json_encode($objets), 'images_json' => json_encode($images)]);
 });
 
 Flight::route('/new_game', function() {

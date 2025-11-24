@@ -26,13 +26,20 @@
             <input type="text" id="code-input" v-model="codeSaisi" placeholder="Votre code ici">
             <button @click="validerCode">Valider</button>
         </div>
+        <div id="popup2">
+            <p>Entrez le code :</p>
+            <input type="text" id="code-input" v-model="codeSaisi2" placeholder="Votre code ici">
+            <button @click="validerCode2">Valider</button>
+        </div>
     </div>
 
     <div id="commentaire">commentaire</div>
 
     <div id="score">Temps : {{ timer }} s</div>
 
-    <div id="data" data-objets='<?php echo $objets_json; ?>'> </div>
+    <div id="data_objet" data-objets='<?php echo $objets_json; ?>'> </div>
+
+    <div id="data_image" data-objets='<?php echo $images_json; ?>'> </div>
 
     
 

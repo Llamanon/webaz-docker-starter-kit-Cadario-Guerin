@@ -21,7 +21,7 @@
         // Connexion BDD
         $link = pg_connect("host=$host port=$port dbname=$dbname user=$user password=$pass");
 
-        $sql = "SELECT name,score FROM joueurs ORDER BY score DESC LIMIT 10";
+        $sql = "SELECT name,score FROM joueurs ORDER BY score LIMIT 10";
         $query = pg_query($link, $sql);
         $results = pg_fetch_all($query);
         echo "<table border='1' cellpadding='8' cellspacing='0'>";

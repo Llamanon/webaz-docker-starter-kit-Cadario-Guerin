@@ -34,14 +34,16 @@ CREATE TABLE objets (
 
 CREATE TABLE images (
     id SERIAL PRIMARY KEY,
+    id_objet INTEGER,
     name TEXT,
+    ratio_taille float,
     url TEXT
 );
 
 INSERT INTO objets (name, point, minZoomVisible, maxZoomVisible, visible, image, attribut) VALUES
 ('tacheometre', '(5.7741, 43.96225)', 17, 19, TRUE, 'assets/tacheo.jpg', 'or'),
 ('gs18', '(5.7741, 43.96225)', 17, 19, TRUE, 'assets/tacheo2.jpg', 'or'),
-('papier code', '(5.776772841012113, 43.97929133428411)', 18, 20, TRUE, 'assets/tacheo.jpg', 'or'),
+('papier code', '(5.776711068346986, 43.97925692971896)', 18, 20, TRUE, 'assets/code.jpg', 'or'),
 ('tacheometre 2', '(5.7741, 43.96225)', 15, 19, FALSE, 'assets/tacheo.jpg', 'oc'),
 ('carteSD', '(5.7789702, 43.960561)', 14, 19, FALSE, 'assets/carteSD.png', 'or'),
 ('tacheometre 3', '(5.8387194, 43.9676102)', 14, 19, FALSE, 'assets/tacheo.jpg', 'ob'),
@@ -49,6 +51,17 @@ INSERT INTO objets (name, point, minZoomVisible, maxZoomVisible, visible, image,
 ;
 
 
-INSERT INTO images (name, url) VALUES
-('tacheometre', 'assets/tacheo.jpg');
+INSERT INTO images (name, ratio_taille, url) VALUES
+('tacheometre', 0.3, 'assets/tacheo.jpg'),
+('gs18', 0.1, 'assets/tacheo2.jpg'),
+('papier code', 1, 'assets/code.jpg'),
+('tacheometre 2', 0.3, 'assets/tacheo.jpg'),
+('carteSD', 0.03, 'assets/carteSD.png'),
+('tacheometre 3', 0.3, 'assets/tacheo.jpg'),
+('ordinateur', 0.1, 'assets/tacheo.png')
+;
 
+UPDATE images i 
+SET id_objet = o.id
+FROM objets o
+WHERE o.name = i.name;

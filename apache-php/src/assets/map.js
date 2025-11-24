@@ -15,11 +15,13 @@ let osmLayer = new ol.layer.Tile({
 });
 
 
-let dico = {tacheo : 1, tacheo1 : 2, tacheo2 : 3, tacheoGS : 1, carteSD: 1};
-
-let objets_php =  document.getElementById("data").dataset.objets;
+let objets_php =  document.getElementById("data_objet").dataset.objets;
 let objets = JSON.parse(objets_php);
-console.log(objets);
+
+let images_php =  document.getElementById("data_image").dataset.objets;
+let images = JSON.parse(images_php);
+console.log(images);
+
 //tacheo et tacheoGS à forca des le debut sur le meme point
 //tacheo1 a forca pour le code
 //tacheo2 a saint pierre pour les photos
@@ -37,18 +39,7 @@ let map = new ol.Map({
     }),
 });
 
-/*
-let featuresList = [tacheo, tacheo1, tacheo2, tacheoGS];
-let minZoomList   = [17, 4, 4, 17];
-let maxZoomList   = [19, 5, 5, 19];
 
-
-featuresList.forEach((f, i) => {
-    f.set('minZoom', minZoomList[i]);
-    f.set('maxZoom', maxZoomList[i]);
-});
-
-*/
 
 let featuresDict = {};
 
@@ -62,13 +53,15 @@ objets.forEach(item => {
     temp_dispo = false
   }
 
+  let image_corres = images.find(obj => obj.id_objet == item.id)
+
   featuresDict[key] = {
     coords: coords,
     minZoom: parseInt(item.minzoomvisible),
     maxZoom: parseInt(item.maxzoomvisible),
     icon: item.image,
     dispo: temp_dispo,
-    echelle: 0.3,
+    echelle: image_corres.ratio_taille,
     classe: item.attribut
   };
 });
@@ -157,7 +150,6 @@ let couche = new ol.layer.Vector({
     let min = feature.get('minZoom');
     let max = feature.get('maxZoom');
     let dispo = feature.get('dispo');
-    console.log("zoom=", zoom, "min=", min, "max=", max);
     if (zoom < min || zoom > max) return null;
 
     if (dispo) return new ol.style.Style({
@@ -202,21 +194,6 @@ let couche = new ol.layer.Vector({
 map.addLayer(couche);
 
 
-let time = 0;
-
-setInterval(() => {
-    time++;
-
-    // convertit en mm:ss
-    let minutes = Math.floor(time / 60);
-    let seconds = time % 60;
-
-    let mm = minutes.toString().padStart(2, '0');
-    let ss = seconds.toString().padStart(2, '0');
-
-    document.getElementById('score').textContent = `Temps : ${mm}:${ss}`;
-}, 1000);
-
 
 
 Vue.createApp({
@@ -226,19 +203,23 @@ Vue.createApp({
             inventaire: [],
             selectedIndex: null,
             codeSaisi: "",
+            codeSaisi2: "",
             el: null,
+            el2: null,
+            time: 0,
+            timer: null
           }
     },
     mounted() {
       this.el = document.getElementById('popup');
-      let time = 0;
+      this.el2 = document.getElementById('popup2');
 
-      setInterval(() => {
-          time++;
+      this.timer = setInterval(() => {
+          this.time++;
 
         // convertit en mm:ss
-        let minutes = Math.floor(time / 60);
-        let seconds = time % 60;
+        let minutes = Math.floor(this.time / 60);
+        let seconds = this.time % 60;
 
         let mm = minutes.toString().padStart(2, '0');
         let ss = seconds.toString().padStart(2, '0');
@@ -271,14 +252,14 @@ Vue.createApp({
       map.on('click', evt => {
         let center = evt.coordinate; // renvoie en projection EPSG:3857 ------------------------------------------------------------------------------
         let lonLat = ol.proj.toLonLat(center);  // convertit en [lon, lat]
-        console.log(lonLat, center);
+        console.log(ol.proj.toLonLat([643060.5345882539, 5462232.7063586535]), center);
           const featuress = map.forEachFeatureAtPixel(evt.pixel, f => f);
           if (featuress) {
             const src = couche.getStyle()(featuress).getImage().getSrc();
             if (featuress.get("classe") == "or") {
               this.ajouterObjet(src, featuress.get("id"));
               couche.getSource().removeFeature(featuress);
-            } else if (featuress.get("classe") == 'oc') {
+            } else if (featuress.get("classe") == 'oc' && featuress.get("id") == 4) {
               let popup = new ol.Overlay({
                   element: this.el,
                   positioning: 'bottom-center',
@@ -286,8 +267,17 @@ Vue.createApp({
               });
               popup.setPosition(featuress.getGeometry().getCoordinates());
               map.addOverlay(popup);
-              this.el.style.display = 'block'; 
-            } else if (featuress.get("name") == 'ob') {
+              this.el.style.display = 'block';
+            } else if (featuress.get("classe") == 'oc' && featuress.get("id") == 7) {
+              let popup2 = new ol.Overlay({
+                  element: this.el2,
+                  positioning: 'bottom-center',
+                  offset: [70, -30],
+              });
+              popup2.setPosition(featuress.getGeometry().getCoordinates());
+              map.addOverlay(popup2);
+              this.el2.style.display = 'block';
+            } else if (featuress.get("classe") == 'ob') {
               console.log('bloque');
               if (this.selectedIndex != null && this.inventaire[this.selectedIndex].id == 5) {
                 this.ajouterObjet("assets/ordi.png", 7);
@@ -319,6 +309,25 @@ Vue.createApp({
           featuresDict[5].feature.set('dispo', true)
           this.el.style.display = 'none';
           featuresDict[4].feature.set('dispo', false);
+        } else {
+          console.log('mauvais code')
+        }
+      },
+      validerCode2() {
+        console.log("Code saisi :", this.codeSaisi2);
+        if (this.codeSaisi2 == 7788) {
+          this.el2.style.display = 'none';
+          featuresDict[7].feature.set('dispo', false);
+          clearInterval(this.timer);
+
+
+          fetch("http://localhost/map.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: "timer=" + encodeURIComponent(this.timer)
+            })
+            .then(response => response.text())
+            .then(data => console.log("Réponse PHP :", data));
         } else {
           console.log('mauvais code')
         }
