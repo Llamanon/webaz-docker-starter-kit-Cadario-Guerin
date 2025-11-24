@@ -37,6 +37,22 @@ let map = new ol.Map({
 });
 
 
+// Récupère la checkbox
+const checkbox = document.getElementById('maCase');
+
+// Ajoute un listener sur le changement d'état
+checkbox.addEventListener('change', function() {
+    if (this.checked) {
+        // Si cochée, ajoute la heatmap
+        map.addLayer(wsmLayer);
+        console.log('ajouté');
+    } else {
+        // Sinon, retire la heatmap
+        map.removeLayer(wsmLayer);
+        console.log('retire');
+    }
+});
+
 
 let featuresDict = {};
 
@@ -53,8 +69,8 @@ objets.forEach(item => {
   let image_corres = images.find(obj => obj.id_objet == item.id)
   featuresDict[key] = {
     coords: coords,
-    minZoom: parseInt(item.minzoomvisible),
-    maxZoom: parseInt(item.maxzoomvisible),
+    minZoom: item.minzoomvisible,
+    maxZoom: item.maxzoomvisible,
     icon: item.image,
     dispo: temp_dispo,
     echelle: image_corres.ratio_taille,
