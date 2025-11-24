@@ -21,7 +21,7 @@ CREATE TABLE joueurs (
     score INTEGER DEFAULT 2147483647
 );
 
--- Créer une table objets qui contient les informationd nécessaires au code
+-- Créer une table objets qui contient les informations nécessaires au code
 CREATE TABLE objets (
     id SERIAL PRIMARY KEY,
     name TEXT,
